@@ -61,7 +61,6 @@ router.post('/login', async (req, res) => {
       res.status(200).json({
         message: 'Login success!',
         token: generateToken(dbUserId, email),
-        uuid: dbUserId
       });
     } else {
       res.status(400).json({

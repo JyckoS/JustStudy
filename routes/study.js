@@ -73,4 +73,33 @@ router.post('/add', authenticate, async (req, res) => {
   }
 
 });
+
+router.get('/top-today', authenticate, async (req, res) => {
+  let results;
+  try {
+    results = await db.query(` SELECT u.display_name, SUM(s.minutes) AS total_minutes
+      FROM study_sessions s
+      JOIN users u ON s.user_id = u.id
+      WHERE s.created_at >= NOW() - INTERVAL '1 day'
+      GROUP BY u.display_name
+      ORDER BY total_minutes DESC
+      LIMIT 10`);
+    } catch (err) {
+      res.status(400).json({
+        message: "SERVER ERROR"
+      });
+      return;
+    }
+    if (!results || results.rows.length == 0) {
+      res.status(400).json({
+        message: "SERVER ERROR 2"
+      });
+      return;
+    }
+    res.status(200).json({
+      message: "Top Study in the past 24 hours",
+      top: results.rows
+    });
+  
+  });
 module.exports = router;

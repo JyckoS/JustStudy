@@ -54,7 +54,24 @@ router.get('/history', authenticate, async (req,res) => {
   return;
 
 });
+router.get('/user', authenticate, async (req, res) =>{
+  const uuid = req.user.id;
+  try {
+    results = await db.query('SELECT * FROM study_sessions WHERE user_id=$1', [uuid]);
 
+  } catch (err) {
+    res.status(400).json(
+      {
+        message: "An error occured"
+      }
+    );
+    return;
+  }
+  res.status(200).json({
+    message: "Success!",
+    user: results.rows
+  });
+});
 // add new study session to user justn eed to put minutes
 router.post('/add', authenticate, async (req, res) => {
   const uuid = req.user.id;

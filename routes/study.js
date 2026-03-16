@@ -67,9 +67,10 @@ router.get('/user', authenticate, async (req, res) =>{
     );
     return;
   }
+  const {password, ...safeUser} = results.rows[0];
   res.status(200).json({
     message: "Success!",
-    user: results.rows
+    user: safeUser
   });
 });
 // add new study session to user justn eed to put minutes
